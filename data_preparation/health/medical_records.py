@@ -2,7 +2,7 @@ import re
 
 import pandas as pd
 
-from data_preparation.configs import HEALTH_FOLDER
+from data_preparation import HEALTH_FOLDER
 
 BASE_DIR = HEALTH_FOLDER + "arvin6-medical-records-10-yrs/"
 

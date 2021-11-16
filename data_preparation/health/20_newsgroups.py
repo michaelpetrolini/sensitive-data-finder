@@ -1,7 +1,7 @@
 import re
 from os import listdir
 
-from data_preparation.configs import MIXED_FOLDER, HEALTH_FOLDER
+from data_preparation import MIXED_FOLDER, HEALTH_FOLDER
 
 BASE_DIR = MIXED_FOLDER + "20_newsgroups/sci.med/"
 files_list = listdir(BASE_DIR)

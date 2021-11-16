@@ -34,6 +34,14 @@ def get_address() -> str:
     return get_template('address.txt')
 
 
+def get_phone_number() -> str:
+    return get_template('phone_number.txt')
+
+
+def get_social_security_number() -> str:
+    return get_template('social_security_number.txt')
+
+
 def get_names() -> Dict[str, bool]:
     return get_dict('names.txt')
 

@@ -1,7 +1,7 @@
 import re
 from os import listdir
 
-from data_preparation.configs import POLITICS_FOLDER
+from data_preparation import POLITICS_FOLDER
 
 BASE_DIR = POLITICS_FOLDER + "europarl/en/"
 

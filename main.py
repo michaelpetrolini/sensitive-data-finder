@@ -1,7 +1,4 @@
-# This is a sample Python script.
-
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from personal_data import PersonalData
 
 
 def print_hi(name):
@@ -11,6 +8,14 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    text_list = []
+
+    for text in text_list:
+        personal_data = PersonalData(text)
+        print(personal_data)
+
+        if not personal_data.is_empty():
+            print("text contains personal data")
     print_hi('PyCharm')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

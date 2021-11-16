@@ -3,7 +3,7 @@ import re
 from os import listdir
 from xml.etree import ElementTree as ET
 
-from data_preparation.configs import CRIMES_FOLDER
+from data_preparation import CRIMES_FOLDER
 
 BASE_DIR = CRIMES_FOLDER + "Legal Case Reports Dataset/corpus/"
 CITATIONS_CLASS_DIR = BASE_DIR + "citations_class/"

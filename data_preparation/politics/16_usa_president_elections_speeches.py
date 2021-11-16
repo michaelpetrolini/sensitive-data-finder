@@ -1,6 +1,6 @@
 import re
 
-from data_preparation.configs import POLITICS_FOLDER
+from data_preparation import POLITICS_FOLDER
 
 BASE_DIR = POLITICS_FOLDER + "josiah-16-pres-election-speeches/original/"
 

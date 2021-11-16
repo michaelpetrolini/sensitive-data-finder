@@ -1,7 +1,7 @@
 import re
 from os import listdir
 
-from data_preparation.configs import MIXED_FOLDER, POLITICS_FOLDER
+from data_preparation import MIXED_FOLDER, POLITICS_FOLDER
 
 IN_FOLDER = MIXED_FOLDER + "20_newsgroups/"
 

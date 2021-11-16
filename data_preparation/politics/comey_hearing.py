@@ -2,7 +2,7 @@ import re
 
 import pandas as pd
 
-from data_preparation.configs import POLITICS_FOLDER
+from data_preparation import POLITICS_FOLDER
 
 BASE_DIR = POLITICS_FOLDER + "josiah-comey-hearing/original/"
 

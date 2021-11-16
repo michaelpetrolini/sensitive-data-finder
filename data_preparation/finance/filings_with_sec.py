@@ -1,6 +1,6 @@
 from os import listdir
 
-from data_preparation.configs import FINANCE_FOLDER
+from data_preparation import FINANCE_FOLDER
 
 BASE_DIR = FINANCE_FOLDER + "2013-2016 CleanedParsed 10-K Filings with the SEC/"
 
