@@ -5,12 +5,15 @@ import praw
 
 import data_preparation
 
-FOLDER = "E:/Documenti/Uni/Magistrale/Tesi/Datasets/Sessualità/"
+FOLDER = "E:/Documenti/Uni/Magistrale/Tesi/Datasets/Economia/"
 # religion = ["religion", "Christianity", "Christian", "TrueChristian", "atheism", "islam"]
 
 # sexuality = ["lgbt", "gay", "lesbian", "bisexual", "asktransgender", "transgender", "askgaybros", "actuallesbians",
 # "ainbow", "LesbianActually", "gaybros", "LGBTeens", "queer", "sexuality", "sex", "relationships",
 #               "ldssexuality", "asexuality"]
+
+# finance = ["finance", "economics", "personalfinance", "eupersonalfinance", "financialindependence",
+# "UKPersonalFinance", "FinancialPlanning", "investing", "Bogleheads", "stocks"]
 
 reddit_specs = json.loads(pkg_resources.read_text(data_preparation, 'reddit_specs.json'))
 reddit = praw.Reddit(client_id=reddit_specs['client_id'],
@@ -19,10 +22,8 @@ reddit = praw.Reddit(client_id=reddit_specs['client_id'],
                      username=reddit_specs['username'],
                      password=reddit_specs['password'])
 
-
-subreddits = ["lgbt", "gay", "lesbian", "bisexual", "asktransgender", "transgender", "askgaybros", "actuallesbians",
-              "ainbow", "LesbianActually", "gaybros", "LGBTeens", "queer", "sexuality", "sex", "relationships",
-              "ldssexuality", "asexuality"]
+subreddits = ["finance", "economics", "personalfinance", "eupersonalfinance", "financialindependence",
+              "UKPersonalFinance", "FinancialPlanning", "investing", "Bogleheads", "stocks"]
 with open(FOLDER + "reddit.txt", "a", encoding="utf-8") as w:
     for subreddit in subreddits:
         hot_posts = reddit.subreddit(subreddit).hot(limit=10000)
