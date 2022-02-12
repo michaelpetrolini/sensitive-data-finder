@@ -1,38 +1,57 @@
-import importlib.resources as pkg_resources
-import json
-
 import praw
 
-import data_preparation
+from data_preparation import resources
 
-FOLDER = "E:/Documenti/Uni/Magistrale/Tesi/Datasets/Economia/"
-# religion = ["religion", "Christianity", "Christian", "TrueChristian", "atheism", "islam"]
-
-# sexuality = ["lgbt", "gay", "lesbian", "bisexual", "asktransgender", "transgender", "askgaybros", "actuallesbians",
-# "ainbow", "LesbianActually", "gaybros", "LGBTeens", "queer", "sexuality", "sex", "relationships",
-#               "ldssexuality", "asexuality"]
-
-# finance = ["finance", "economics", "personalfinance", "eupersonalfinance", "financialindependence",
-# "UKPersonalFinance", "FinancialPlanning", "investing", "Bogleheads", "stocks"]
-
-reddit_specs = json.loads(pkg_resources.read_text(data_preparation, 'reddit_specs.json'))
+reddit_specs = resources.reddit_specs()
 reddit = praw.Reddit(client_id=reddit_specs['client_id'],
                      client_secret=reddit_specs['client_secret'],
                      user_agent=reddit_specs['user_agent'],
                      username=reddit_specs['username'],
                      password=reddit_specs['password'])
 
-subreddits = ["finance", "economics", "personalfinance", "eupersonalfinance", "financialindependence",
-              "UKPersonalFinance", "FinancialPlanning", "investing", "Bogleheads", "stocks"]
-with open(FOLDER + "reddit.txt", "a", encoding="utf-8") as w:
-    for subreddit in subreddits:
-        hot_posts = reddit.subreddit(subreddit).hot(limit=10000)
-        for post in hot_posts:
-            print(post.title)
-            submission = reddit.submission(id=post.id)
-            submission.comments.replace_more(limit=0)
+health = resources.health_subreddits()
+politics = resources.politics_subreddits()
+religion = resources.religion_subreddits()
+sexuality = resources.sexuality_subreddits()
 
-            entry = (post.title.strip() + '. ' + post.selftext.strip() + '. ' + '. '.join([
-                comment.body.strip() for comment in submission.comments.list()])).replace("\r", " ").replace("\n", " ")
+subreddits = {'health': health,
+              'politics': politics,
+              'religion': religion,
+              'sexuality': sexuality}
 
-            w.write(entry + "\n")
+keep_out = health + politics + religion + sexuality
+
+
+def gather_subreddits_posts(category: str):
+    with open(f"{category}.txt", "w", encoding="utf-8") as w:
+        for subreddit in subreddits[category]:
+            print(subreddit)
+            hot_posts = reddit.subreddit(subreddit).hot(limit=10000)
+
+            for submission in hot_posts:
+                write_submission(submission, w)
+
+
+def gather_unrelated_posts():
+    with open("other.txt", "w", encoding="utf-8") as w:
+        hot_posts = reddit.subreddit("all").hot(limit=50000)
+
+        for submission in hot_posts:
+            s_name = str(submission.subreddit)
+            if s_name not in keep_out:
+                print(s_name)
+                write_submission(submission, w)
+
+
+def write_submission(submission, w):
+    submission.comments.replace_more(limit=0)
+    post = f"{submission.title.strip()}. {submission.selftext.strip()}. "
+    comments = [comment.body.strip() for comment in submission.comments.list()]
+    entry = (post.join(comments)).replace("\r", " ").replace("\n", " ")
+    w.write(entry + "\n")
+
+
+for argument in subreddits.keys():
+    gather_subreddits_posts(argument)
+
+gather_unrelated_posts()

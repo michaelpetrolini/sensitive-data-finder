@@ -1,3 +1,4 @@
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import length, rand
 
 INPUT_PATH = "/user/73576/sdf/input/"
@@ -7,45 +8,43 @@ MEDICAL_PATH = INPUT_PATH + "medical/"
 FINANCE_PATH = INPUT_PATH + "finance/"
 RELIGION_PATH = INPUT_PATH + "religion/"
 SEXUALITY_PATH = INPUT_PATH + "sexuality/"
+CLASSIFIED_PATH = OUTPUT_PATH + "classified/"
+OTHER_PATH = INPUT_PATH + "other/"
 
 spark = SparkSession.builder.appName('SD modeling').getOrCreate()
 
+classified = spark.read.text(CLASSIFIED_PATH + "dataset.txt").withColumnRenamed('value', 'text')
+
+
+def filter_and_save(dataframe, text):
+    dataframe = dataframe.filter(length(dataframe.value) >= 100).filter(length(dataframe.value) <= 200).distinct()
+    dataframe = dataframe.join(classified, dataframe.value == classified.text, "left")
+    dataframe = dataframe.filter(dataframe.text.isNull()).select(dataframe.value)
+    count = dataframe.count()
+    dataframe = dataframe.sample(float(10000) / float(count)).orderBy(rand())
+    dataframe.count()
+    dataframe.rdd.flatMap(lambda x: x).map(lambda x: "\"\"\"" + x.replace("\"", '') + "\"\"\"").coalesce(1) \
+        .saveAsTextFile(OUTPUT_PATH + text)
+    return dataframe
+
+
 politics = spark.read.text(POLITICS_PATH + "politics_aws.txt")
-politics = politics.filter(length(politics.value) >= 100).filter(length(politics.value) <= 200).distinct()
-count = politics.count()
-politics = politics.sample(float(10000)/float(count)).orderBy(rand())
-politics.count()
-politics.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "politics")
+politics = filter_and_save(politics, "politics")
 
 medical = spark.read.text(MEDICAL_PATH + "medical_aws.txt")
-medical = medical.filter(length(medical.value) >= 100).filter(length(medical.value) <= 200).distinct()
-count = medical.count()
-medical = medical.sample(float(10000)/float(count)).orderBy(rand())
-medical.count()
-medical.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "medical")
+medical = filter_and_save(medical, "medical")
 
 finance = spark.read.text(FINANCE_PATH + "finance_aws.txt")
-finance = finance.filter(length(finance.value) >= 100).filter(length(finance.value) <= 200).distinct()
-count = finance.count()
-finance = finance.sample(float(10000)/float(count)).orderBy(rand())
-finance.count()
-finance.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "finance")
+finance = filter_and_save(finance, "finance")
 
 religion = spark.read.text(RELIGION_PATH + "religion_aws.txt")
-religion = religion.filter(length(religion.value) >= 100).filter(length(religion.value) <= 200).distinct()
-count = religion.count()
-religion = religion.sample(float(10000)/float(count)).orderBy(rand())
-religion.count()
-religion.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "religion")
+religion = filter_and_save(religion, "religion")
 
 sexuality = spark.read.text(SEXUALITY_PATH + "sexuality_aws.txt")
-sexuality = sexuality.filter(length(sexuality.value) >= 100).filter(length(sexuality.value) <= 200).distinct()
-count = sexuality.count()
-sexuality = sexuality.sample(float(10000)/float(count)).orderBy(rand())
-sexuality.count()
-sexuality.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "sexuality")
+sexuality = filter_and_save(sexuality, "sexuality")
 
 df = politics.union(medical).union(finance).union(religion).union(sexuality)
 df = df.orderBy(rand())
 df.count()
-df.rdd.flatMap(lambda x: x).coalesce(1).saveAsTextFile(OUTPUT_PATH + "total")
+df.rdd.flatMap(lambda x: x).map(lambda x: "\"\"\"" + x.replace("\"", '') + "\"\"\"").coalesce(1) \
+    .saveAsTextFile(OUTPUT_PATH + "total")

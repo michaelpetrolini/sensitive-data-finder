@@ -1,5 +1,4 @@
 import importlib.resources as pkg_resources
-from datetime import datetime, timedelta
 from typing import Dict
 
 
@@ -48,17 +47,3 @@ def get_names() -> Dict[str, bool]:
 
 def get_surnames() -> Dict[str, bool]:
     return get_dict('surnames.txt')
-
-
-def from_json():
-    date = datetime.strptime("20190312", "%Y%m%d").date()
-
-    with open("C:/bps/script.txt", "w", encoding="utf-8") as f:
-        while int(date.strftime("%Y%m%d")) <= 20211111:
-            y = date.strftime("%Y")
-            ym = date.strftime("%Y%m")
-            ymd = date.strftime("%Y%m%d")
-            f.write("alter table s_dataquality.d_dqm_fc_outcomestatistics_20190312_actual ADD IF NOT EXISTS PARTITION"
-                    " (ldd_reference_date = {}) location '/applications/LDD/swamp/dataquality/"
-                    "dqm_fc_outcomestatistics/dati/{}/{}/{}';\n".format(ymd, y, ym, ymd))
-            date = date + timedelta(days=1)

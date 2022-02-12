@@ -1,0 +1,1 @@
+Health,healthcare,mentalhealth,medicalschool,medicine,Doctor,biology,Coronavirus,nursing

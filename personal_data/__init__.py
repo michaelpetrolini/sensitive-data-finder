@@ -2,7 +2,7 @@ import re
 import string
 from typing import List, Dict
 
-import resources
+from personal_data import resources
 
 
 def look_for_pattern(text: str, pattern: str) -> List[str]:
