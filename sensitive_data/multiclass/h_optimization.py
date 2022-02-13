@@ -23,5 +23,5 @@ df_train, df_val = Dataset(df_train), Dataset(df_val)
 
 for (batch_size, learning_rate, dropout, optimizer) in product(BATCH_SIZES, LEARNING_RATES, DROPOUTS, OPTIMIZERS):
     model = BertClassifier(dropout, learning_rate, batch_size, optimizer)
-    model.train_model(df_train)
-    model.evaluate_model(df_val)
+    model.fit(df_train)
+    model.evaluate(df_val)

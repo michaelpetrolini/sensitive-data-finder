@@ -75,10 +75,9 @@ class BertClassifier(torch.nn.Module):
         dropout_output = self.dropout(pooled_output)
         linear_output = self.linear(dropout_output)
         final_layer = self.activation_function(linear_output)
-
         return final_layer
 
-    def train_model(self, train_data):
+    def fit(self, train_data: Dataset):
         train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=self.batch_size, shuffle=True)
 
         for epoch_num in range(EPOCHS):
@@ -97,7 +96,7 @@ class BertClassifier(torch.nn.Module):
 
         torch.save(self.state_dict(), self.result_path + "model.pt")
 
-    def evaluate_model(self, val_data):
+    def evaluate(self, val_data: Dataset):
         y_pred = []
         y_true = []
 
